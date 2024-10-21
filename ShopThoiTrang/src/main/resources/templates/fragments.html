@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="page_head(title, remove)" th:remove="${remove}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>[[${title}]]</title>
+    <link th:href="@{/images/icon.png}" rel="icon" type = "image/x-icon">
+
+    <!-- Bootstrap core -->
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.css" rel="stylesheet" type="text/css" />
+
+
+
+</head>
+<body>
+    <div th:fragment="toast" class="position-fixed p-3" style="z-index: 11; top:0;right:0">
+        <div id="toast" class="toast" role="alert" data-delay="3000" aria-live="assertive" aria-atomic="true" style="background-color: rgb(56, 142, 60); color: white" >
+            <div class="toast-header justify-content-between" style="background-color: rgb(56, 142, 60); color: white">
+                <strong class="me-auto">iMusic</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div id="toast-body" class="p-3">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE LINK -->
+    <a th:fragment="page_link(pageNum, label, entityName)"
+       class="page-link"
+       th:href="@{'/admin/'+ ${entityName} + '/page/' + ${pageNum} + ${keyword != null ? '?keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${label}]]</a>
+    <!-- PAGE LINK END -->
+
+    <!-- PAGINATION -->
+    <div th:fragment="pagination(entityName)" th:remove="tag">
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing [[${entityName}]] # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No [[${entityName}]] found</span>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap">
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(1, 'First',  ${entityName})}"></a>
+                    </li>
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${currentPage - 1}, 'Previous',  ${entityName})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage != i ? 'page-item': 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="~{fragments :: page_link(${i}, ${i},  ${entityName})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${currentPage + 1}, 'Next', ${entityName})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${totalPages}, 'Last',  ${entityName})}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- PAGINATION END-->
+
+
+    <!-- USER PAGE LINK -->
+    <a th:fragment="page_link_user(pageNum, label, entityName, url)"
+       class="page-link"
+       th:href="@{${url} + '/page/' + ${pageNum} + ${keyword != null ? '?keyword=' + keyword : ''} + ${startDate != null ? '&startDate=' + #dates.format(startDate, 'dd-MM-yyyy') : ''} + ${endDate != null ? '&endDate=' + #dates.format(endDate, 'dd-MM-yyyy') : ''}}">[[${label}]]</a>
+    <!-- USER PAGE LINK END -->
+
+
+    <!-- USER PAGINATION -->
+    <div th:fragment="pagination_user(entityName, url)" th:remove="tag">
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing [[${entityName}]] # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No [[${entityName}]] found</span>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap">
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link_user(1, 'First',  ${entityName}, ${url})}"></a>
+                    </li>
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link_user(${currentPage - 1}, 'Previous',  ${entityName}, ${url})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage != i ? 'page-item': 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="~{fragments :: page_link_user(${i}, ${i},  ${entityName}, ${url})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link_user(${currentPage + 1}, 'Next', ${entityName}, ${url})}"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link_user(${totalPages}, 'Last',  ${entityName}, ${url})}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- USER PAGINATION END -->
+
+    <!-- SEARCH FORM -->
+    <div th:fragment="search_form(entityName)">
+        <form th:action="@{'/admin/'+ ${entityName} + '/page/1'}" class="form-inline m-3">
+            <div class="input-group search-group">
+                <input type="text" class="form-control search-group-input" th:placeholder="${'Search ' + entityName + ' name...'}" th:value="${keyword}" name="keyword">
+                <div class="input-group-append search-group-append d-flex justify-content-center align-items-center">
+                    <i class="fas fa-search"></i>
+                </div>
+                &nbsp;&nbsp;
+                <a th:href="@{'/admin/'+ ${entityName} + '/page/' + ${pageNum}}">
+                    <button type="button" class="btn" style="background-color: transparent; border: 0; box-shadow: none !important;" >
+                        <i class="fas fa-eraser" style="color: black"></i>
+                    </button>
+                </a>
+            </div>
+        </form>
+    </div>
+    <!-- SEARCH FORM END-->
+
+
+    <!-- FORMAT TIME -->
+    <div th:fragment="format_time(dateTime)">
+        <span th:text="${#dates.format(dateTime, 'dd/MM/yyyy')}"></span>
+    </div>
+    <!-- FORMAT TIME END -->
+
+    <!-- FORMAT CURRENCY -->
+    <div th:fragment="format_currency(amount)">
+        <span th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')}"></span>
+    </div>
+    <!-- FORMAT CURRENCY END-->
+</body>
+</html>
